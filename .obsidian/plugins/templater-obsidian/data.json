@@ -1,0 +1,13 @@
+{
+  "templates_folder": "99-模板",
+  "templates_prompt": true,
+  "template_suggestions": true,
+  "trigger_on_file_creation": false,
+  "open_templates_automatically": false,
+  "syntax_highlighting": true,
+  "autocomplete": true,
+  "field_trigger": {
+    "field_name": "",
+    "field_content": ""
+  }
+}

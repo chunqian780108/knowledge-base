@@ -1,0 +1,20 @@
+{
+  "board-format": "",
+  "board-title-format": "",
+  "board-tag": "kanban",
+  "date-display-format": "YYYY-MM-DD",
+  "date-insert-format": "YYYY-MM-DD",
+  "archive-tag": "archived",
+  "list-metadata": false,
+  "card-metadata": false,
+  "show-checkboxes-in-file": true,
+  "show-setting-on-boards": true,
+  "link-date-to-daily-note": false,
+  "hide-card-counts": false,
+  "subtask-checklist": false,
+  "completion-text": "completion date:",
+  "created-text": "created date:",
+  "archive-date-display-format": "YYYY-MM-DD",
+  "archive-date-insert-format": "YYYY-MM-DD",
+  "display-archive-date": true
+}

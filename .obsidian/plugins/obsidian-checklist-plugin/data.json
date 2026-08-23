@@ -1,0 +1,23 @@
+{
+  "numDisplayed": 20,
+  "sortDirection": "desc",
+  "sortBy": "default",
+  "groupBy": "page",
+  "showChecked": false,
+  "showUnchecked": true,
+  "showContent": true,
+  "showDetail": true,
+  "showTag": true,
+  "checkboxColor": "#2b93d1",
+  "checklistFiles": [
+    {
+      "path": "01-工作/工作日志/",
+      "recursive": false
+    },
+    {
+      "path": "99-模板/GTD收件箱模板.md",
+      "recursive": false
+    }
+  ],
+  "showAllFiles": true
+}

@@ -1,0 +1,36 @@
+# ============================================
+# Obsidian Git .gitignore
+# ============================================
+
+# --- Obsidian 频繁变动的缓存文件（不需要版本控制）---
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/workspaces.json
+.obsidian/graph.json
+
+# --- Obsidian 插件缓存 ---
+.obsidian/plugins/*/data.json.bak
+.obsidian/plugins/*/*.log
+
+# --- 系统文件 ---
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# --- 临时文件 ---
+*.tmp
+*.bak
+*.swp
+*~
+~$*
+
+# --- 大文件 / 二进制附件（按需取消注释）---
+# 99-附件/图片/*
+# 99-附件/文件/*
+
+# --- Excalidraw 临时文件 ---
+*.excalidraw.tmp
