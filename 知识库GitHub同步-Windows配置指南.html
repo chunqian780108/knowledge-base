@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>知识库 GitHub 同步 · Windows 配置指南</title>
+<style>
+  :root{
+    --bg:#0d1117; --card:#161b26; --line:#243044;
+    --accent:#4ec9b0; --gold:#f0c050; --text:#e6edf3; --muted:#8b97a8;
+    --step:#4ec9b0; --warn:#e06c75; --code-bg:#0a0f16;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);line-height:1.75;padding:24px 16px}
+  .wrap{max-width:780px;margin:0 auto}
+  header{text-align:center;padding:28px 0 24px;border-bottom:1px solid var(--line);margin-bottom:32px}
+  header h1{font-size:22px;background:linear-gradient(90deg,var(--accent),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+  header p{color:var(--muted);font-size:13px;margin-top:6px}
+  header .repo{display:inline-block;margin-top:12px;font-family:ui-monospace,monospace;font-size:12px;color:var(--accent);background:var(--card);padding:4px 12px;border-radius:6px;border:1px solid var(--line)}
+
+  .step{background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:20px;overflow:hidden}
+  .step-head{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line);background:#1a2030}
+  .step-num{width:30px;height:30px;border-radius:8px;background:var(--step);color:#0d1117;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0}
+  .step-title{font-size:15px;font-weight:700}
+  .step-body{padding:16px 18px}
+  .step-body p{margin-bottom:12px;font-size:14px;color:#c4ccd6}
+  .step-body p:last-child{margin-bottom:0}
+
+  .code{background:var(--code-bg);border:1px solid var(--line);border-radius:8px;padding:12px 14px;font-family:ui-monospace,"SF Mono",Consolas,monospace;font-size:13px;color:var(--accent);line-height:1.6;overflow-x:auto;margin:10px 0;white-space:pre-wrap;word-break:break-all}
+  .code .comment{color:var(--muted)}
+  .code .var{color:var(--gold)}
+
+  .note{background:rgba(78,201,176,.08);border-left:3px solid var(--accent);padding:10px 14px;border-radius:0 6px 6px 0;font-size:13px;color:#a8c4be;margin:10px 0}
+  .warn{background:rgba(224,108,117,.08);border-left:3px solid var(--warn);padding:10px 14px;border-radius:0 6px 6px 0;font-size:13px;color:#d4a0a4;margin:10px 0}
+
+  ul,ol{margin:8px 0 12px 18px;font-size:14px;color:#c4ccd6}
+  li{margin-bottom:6px}
+  li b{color:var(--text)}
+
+  .flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:14px 0}
+  .flow .box{background:#1a2030;border:1px solid var(--line);border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600}
+  .flow .box.edit{color:var(--accent)}
+  .flow .box.commit{color:var(--gold)}
+  .flow .box.push{color:var(--accent)}
+  .flow .arr{color:var(--muted);font-size:16px}
+
+  .check{display:flex;align-items:center;gap:8px;font-size:14px;margin-bottom:6px}
+  .check::before{content:"✓";color:var(--accent);font-weight:700}
+
+  footer{text-align:center;color:var(--muted);font-size:12px;margin-top:28px;padding-top:16px;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>知识库 GitHub 同步 · Windows 配置指南</h1>
+    <p>从零开始，在 Windows 电脑上通过 GitHub 同步你的 Obsidian 知识库</p>
+    <div class="repo">github.com/chunqian780108/knowledge-base</div>
+  </header>
+
+  <!-- Step 0 -->
+  <div class="step">
+    <div class="step-head"><div class="step-num">0</div><div class="step-title">前置准备</div></div>
+    <div class="step-body">
+      <ul>
+        <li><b>GitHub 账号</b>：已有，用户名 <code style="color:var(--accent)">chunqian780108</code></li>
+        <li><b>另一台 Mac 已推送最新内容</b>：在 Mac 上的 Obsidian 里点 Git 插件的 <b>Push</b>，或运行 <code style="color:var(--accent)">bash push-to-github.sh</code></li>
+        <li><b>本指南涉及的文件</b>：clone 仓库后会自动获取 <code style="color:var(--accent)">push-to-github.ps1</code> 脚本</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Step 1 -->
+  <div class="step">
+    <div class="step-head"><div class="step-num">1</div><div class="step-title">安装 Git for Windows</div></div>
+    <div class="step-body">
+      <p>打开浏览器，访问 <b>https://git-scm.com/download/win</b>，下载并安装。安装时关键选项如下：</p>
+      <ul>
+        <li>选择 <b>Git from the command line and also from 3rd-party software</b>（默认选项）</li>
+        <li>凭据助手选 <b>Git Credential Manager</b>（默认选项，首次 push 会弹出登录窗）</li>
+        <li>其余选项保持默认即可</li>
+      </ul>
+      <p>安装完成后，打开 <b>PowerShell</b>（开始菜单搜索 PowerShell），验证安装：</p>
+      <div class="code">git --version
+<span class="comment"># 应输出类似：git version 2.43.0.windows.1</span></div>
+      <div class="note">如果显示版本号，说明安装成功。如果提示"不是内部或外部命令"，重启电脑后再试。</div>
+    </div>
+  </div>
+
+  <!-- Step 2 -->
+  <div class="step">
+    <div class="step-head"><div class="step-num">2</div><div class="step-title">创建 GitHub Personal Access Token (PAT)</div></div>
+    <div class="step-body">
+      <p>Git 推送需要密码，但 GitHub 已不支持用账号密码认证，需要生成一个 Token 作为密码。</p>
+      <ol>
+        <li>浏览器打开 <b>https://github.com/settings/tokens</b></li>
+        <li>点击 <b>"Generate new token" → "Generate new token (classic)"</b></li>
+        <li>Note 填 <code style="color:var(--accent)">knowledge-base-sync</code>（随便写，方便认）</li>
+        <li>Expiration 选 <b>"No expiration"</b>（或 90 天）</li>
+        <li><b>勾选 "repo"</b>（完整仓库读写权限）</li>
+        <li>拉到底点 <b>"Generate token"</b></li>
+        <li><b>立刻复制</b>生成的 token（形如 <code style="color:var(--gold)">ghp_xxxxxxxxxxxx</code>），页面关掉就看不到了</li>
+      </ol>
+      <div class="warn">Token 只显示一次，务必先复制保存到安全的地方（如密码管理器）。它是你的 GitHub 密码。</div>
+    </div>
+  </div>
+
+  <!-- Step 3 -->
+  <div class="step">
+    <div class="step-head"><div class="step-num">3</div><div class="step-title">克隆知识库到本地</div></div>
+    <div class="step-body">
+      <p>在 PowerShell 中执行以下命令（把 <code style="color:var(--gold)">你的用户名</code> 换成 Windows 登录名）：</p>
+      <div class="code">cd $HOME\Documents
+git clone https://github.com/chunqian780108/knowledge-base.git KnowledgeBase</div>
+      <p>首次执行会弹出 GitHub 登录窗口：</p>
+      <ul>
+        <li>选择 <b>"Token"</b> 或 <b>"Personal Access Token"</b></li>
+        <li>粘贴刚才复制的 PAT</li>
+        <li>点 <b>登录/确认</b></li>
+      </ul>
+      <div class="note">之后 Windows 凭据管理器会自动记住凭证，不再重复输入。</div>
+      <p>验证克隆成功：</p>
+      <div class="code">cd KnowledgeBase
+dir
+<span class="comment"># 应看到 .obsidian、push-to-github.ps1 等文件</span>
+git log --oneline -3
+<span class="comment"># 应看到最近的提交记录</span></div>
+      <p>知识库本地路径为：<code style="color:var(--accent)">$HOME\Documents\KnowledgeBase</code>（即 <code style="color:var(--gold)">C:\Users\你的用户名\Documents\KnowledgeBase</code>）</p>
+    </div>
+  </div>
+
+  <!-- Step 4 -->
+  <div class="step">
+    <div class="step-head"><div class="step-num">4</div><div class="step-title">安装 Obsidian 并打开知识库</div></div>
+    <div class="step-body">
+      <ol>
+        <li>访问 <b>https://obsidian.md</b>，下载 Windows 版安装包</li>
+        <li>安装并打开 Obsidian</li>
+        <li>点 <b>"Open folder as vault"</b>（打开文件夹作为库）</li>
+        <li>选择刚才克隆的 <b>KnowledgeBase</b> 文件夹</li>
+        <li>信任作者 → 确认打开</li>
+      </ol>
+      <div class="note">此时你的笔记、文件夹结构、Obsidian 设置都会从 GitHub 同步过来，和 Mac 上一致。</div>
+    </div>
+  </div>
+
+  <!-- Step 5 -->
+  <div class="step">
+    <div class="step-head"><div class="step-num">5</div><div class="step-title">安装 Obsidian Git 插件（自动同步）</div></div>
+    <div class="step-body">
+      <ol>
+        <li>Obsidian 设置 → <b>第三方插件（Community plugins）</b></li>
+        <li>关闭"安全模式"（Turn on community plugins）</li>
+        <li>搜索 <b>"Obsidian Git"</b>，安装并启用</li>
+        <li>进入插件设置，推荐配置：
+          <ul>
+            <li><b>Auto pull interval</b>：30 分钟（定期拉取远程更新）</li>
+            <li><b>Auto push interval</b>：30 分钟（定期推送本地变更）</li>
+            <li><b>Auto backup interval</b>：10 分钟（定期自动提交）</li>
+            <li><b>Commit message</b>：<code style="color:var(--accent)">chore: auto backup {{date}}</code></li>
+          </ul>
+        </li>
+      </ol>
+      <div class="note">插件已随仓库 clone 下来（<code>.obsidian/plugins/obsidian-git/</code>），启用后配置自动同步。</div>
+    </div>
+  </div>
+
+  <!-- Step 6 -->
+  <div class="step">
+    <div class="step-head"><div class="step-num">6</div><div class="step-title">日常同步工作流</div></div>
+    <div class="step-body">
+      <p>配置完成后，日常使用只需记住一个节奏：</p>
+      <div class="flow">
+        <div class="box edit">开始编辑前 Pull</div>
+        <span class="arr">→</span>
+        <div class="box edit">正常写笔记</div>
+        <span class="arr">→</span>
+        <div class="box commit">自动 Commit</div>
+        <span class="arr">→</span>
+        <div class="box push">自动 Push</div>
+      </div>
+      <p><b>手动同步</b>（如果想立即推/拉）：</p>
+      <ul>
+        <li>Obsidian 里按 <b>Ctrl+P</b> → 输入 "Obsidian Git: Pull" 或 "Push"</li>
+        <li>或在 KnowledgeBase 文件夹里右键 <code style="color:var(--accent)">push-to-github.ps1</code> → "使用 PowerShell 运行"</li>
+      </ul>
+      <div class="warn">两台电脑同时编辑同一文件时，可能产生冲突。建议一台电脑编辑完先 Push，另一台开始前先 Pull。</div>
+    </div>
+  </div>
+
+  <!-- Step 7 -->
+  <div class="step">
+    <div class="step-head"><div class="step-num">7</div><div class="step-title">故障排除</div></div>
+    <div class="step-body">
+      <p><b>推送失败 / 凭证错误</b></p>
+      <div class="code"><span class="comment"># 清除已存的错误凭证，重新输入</span>
+cmdkey /delete:git:https://github.com
+<span class="comment"># 然后重新 git push，会弹出登录窗口</span></div>
+
+      <p><b>中文文件名乱码</b></p>
+      <div class="code">git config --global core.quotepath false</div>
+
+      <p><b>拉取时冲突</b></p>
+      <div class="code"><span class="comment"># 如果 pull 报冲突，保留本地版本：</span>
+git stash
+git pull
+git stash pop
+<span class="comment"># 或在 Obsidian Git 设置里把 Merge strategy 改为 "Merge"</span></div>
+
+      <p><b>PowerShell 脚本无法运行</b></p>
+      <div class="code"><span class="comment"># 以管理员身份打开 PowerShell，执行一次：</span>
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser</div>
+    </div>
+  </div>
+
+  <!-- 验证清单 -->
+  <div class="step">
+    <div class="step-head"><div class="step-num">✓</div><div class="step-title">配置完成验证清单</div></div>
+    <div class="step-body">
+      <div class="check">PowerShell 里 <code>git --version</code> 正常输出</div>
+      <div class="check"><code>git clone</code> 成功，KnowledgeBase 文件夹有内容</div>
+      <div class="check">Obsidian 能打开 KnowledgeBase 文件夹，笔记正常显示</div>
+      <div class="check">Obsidian Git 插件已启用，状态栏显示 Git 信息</div>
+      <div class="check">运行 <code>push-to-github.ps1</code> 能成功推送（首次需输入 PAT）</div>
+      <div class="check">在 Mac 上 Push 新内容后，Windows 上 Pull 能收到</div>
+    </div>
+  </div>
+
+  <footer>
+    知识库 GitHub 同步 · Windows 配置指南 · 2026-08-29<br>
+    仓库：github.com/chunqian780108/knowledge-base · 任何一步卡住随时问我
+  </footer>
+
+</div>
+</body>
+</html>
