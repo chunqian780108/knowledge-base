@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>复利 60 秒科普 · 一键复制脚本</title>
+<style>
+  :root{
+    --bg:#0d1117; --card:#161b26; --line:#243044;
+    --accent:#4ec9b0; --gold:#f0c050; --text:#e6edf3; --muted:#8b97a8;
+    --ok:#4ec9b0; --copied:#3a5a4a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);padding:28px 20px;line-height:1.7}
+  .wrap{max-width:820px;margin:0 auto}
+  header{text-align:center;padding-bottom:20px;border-bottom:1px solid var(--line);margin-bottom:28px}
+  header h1{font-size:22px;background:linear-gradient(90deg,var(--accent),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+  header p{color:var(--muted);font-size:13px;margin-top:5px}
+
+  .block{background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:24px;overflow:hidden}
+  .block-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--line);background:#1a2030}
+  .block-head .title{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px}
+  .block-head .title .n{width:24px;height:24px;border-radius:6px;background:var(--accent);color:#0d1117;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:800}
+  .block-head .title .tag{font-size:11px;color:var(--muted);font-weight:400;margin-left:4px}
+  .copy-btn{
+    flex-shrink:0;background:var(--accent);color:#0d1117;border:none;border-radius:8px;
+    padding:7px 16px;font-size:13px;font-weight:700;cursor:pointer;
+    transition:all .2s;font-family:inherit;
+  }
+  .copy-btn:hover{filter:brightness(1.1)}
+  .copy-btn.copied{background:var(--copied);color:var(--ok)}
+  .copy-btn:active{transform:scale(.96)}
+
+  .code-area{padding:16px 18px;font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:14px;line-height:1.85;white-space:pre-wrap;word-break:break-all;color:#c4ccd6;max-height:none;overflow-x:auto}
+  .code-area.srt{font-size:13px;line-height:1.7}
+  .code-area .hl{color:var(--accent)}
+  .code-area .num{color:var(--gold)}
+  .code-area .warn{color:#e06c75}
+
+  .table-area{padding:0;overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  table th{background:#1a2030;color:var(--muted);font-weight:600;padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap;font-size:12px}
+  table td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.6}
+  table tr:last-child td{border-bottom:none}
+  table td:first-child{color:var(--gold);font-family:ui-monospace,monospace;white-space:nowrap}
+  table td:nth-child(2){font-weight:600}
+  table tr:hover{background:#1a2030}
+
+  .tip{font-size:12px;color:var(--muted);padding:10px 18px;background:#11151e;border-top:1px solid var(--line)}
+
+  footer{text-align:center;color:var(--muted);font-size:12px;margin-top:28px;padding-top:16px;border-top:1px solid var(--line)}
+
+  @media(max-width:560px){
+    .block-head{flex-direction:column;gap:10px;align-items:flex-start}
+    .copy-btn{align-self:stretch;text-align:center}
+    .code-area{font-size:13px}
+    table{font-size:12px}
+    table th,table td{padding:8px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>复利 60 秒科普 · 一键复制脚本</h1>
+    <p>口播全文 · SRT 字幕 · 分镜制作表 · 点按钮即复制到剪贴板</p>
+  </header>
+
+  <!-- 口播全文 -->
+  <div class="block">
+    <div class="block-head">
+      <div class="title"><span class="n">1</span>完整口播稿 <span class="tag">适合提词器 · 约 220 字 · 60 秒</span></div>
+      <button class="copy-btn" data-target="vo-text">一键复制</button>
+    </div>
+    <div class="code-area" id="vo-text">每月存1000块，30年后你猜有多少？答案可能吓你一跳。
+
+来看三种人，同样每月1000块，结局天差地别。
+
+第一种，钱塞床底，30年后36万，一分没多。
+
+第二种，每月定投1000，年化8%——
+坚持10年，变18万；
+坚持20年，变59万；
+坚持30年——149万。
+
+本金还是36万，多出来的113万，全是复利赚的。
+
+复利是什么？你赚的利息，下个月开始替你赚钱，像滚雪球，越滚越大。
+
+所以你看：第一个十年赚6万，第二个赚41万，第三个赚90万——越往后越猛。
+
+复利就是钱生钱，钱生的钱再生钱。开始得早，比投得多更值钱。</div>
+    <div class="tip">提示：直接粘贴到提词器 App，按 3.8 字/秒节奏朗读，留 2 秒画面呼吸。</div>
+  </div>
+
+  <!-- SRT 字幕 -->
+  <div class="block">
+    <div class="block-head">
+      <div class="title"><span class="n">2</span>SRT 字幕文件 <span class="tag">.srt 格式 · 8 条 · 可直接导入剪映/PR</span></div>
+      <button class="copy-btn" data-target="srt-text">一键复制</button>
+    </div>
+    <div class="code-area srt" id="srt-text">1
+00:00:00,000 --> 00:00:05,000
+每月存1000块，30年后你猜有多少？
+
+2
+00:00:05,000 --> 00:00:12,000
+三种人 · 同样每月1000块
+
+3
+00:00:12,000 --> 00:00:20,000
+30年 = 36万 · 0收益
+
+4
+00:00:20,000 --> 00:00:33,000
+10年→18万 ｜ 20年→59万 ｜ 30年→149万
+
+5
+00:00:33,000 --> 00:00:42,000
+本金36万 + 复利113万 = 149万
+
+6
+00:00:42,000 --> 00:00:50,000
+利息 → 变本金 → 再生利息
+
+7
+00:00:50,000 --> 00:00:55,000
++6万 → +41万 → +90万
+
+8
+00:00:55,000 --> 00:01:00,000
+复利 = 钱生钱，钱生的钱再生钱</div>
+    <div class="tip">提示：复制后保存为 .srt 文件，导入剪映"识别字幕"旁的"导入字幕"即可。</div>
+  </div>
+
+  <!-- 分镜制作表 -->
+  <div class="block">
+    <div class="block-head">
+      <div class="title"><span class="n">3</span>分镜制作表 <span class="tag">制图/动画参照 · 含画面+动效+字幕</span></div>
+      <button class="copy-btn" data-target="tb-text">一键复制</button>
+    </div>
+    <div class="table-area">
+      <table id="tb-text-html">
+        <thead><tr><th>时间</th><th>分镜</th><th>口播</th><th>字幕</th><th>画面+动效</th></tr></thead>
+        <tbody>
+          <tr><td>00:00–05</td><td>开场钩子</td><td>每月存1000块，30年后你猜有多少？答案可能吓你一跳。</td><td>—</td><td>黑屏跳出 36万→59万→149万，末数金色发光+"叮"音效</td></tr>
+          <tr><td>00:05–12</td><td>三种人</td><td>来看三种人，同样每月1000块，结局天差地别。</td><td>三种人 · 同样1000/月</td><td>三人偶并排，标签依次亮起，第三人头"？"闪烁</td></tr>
+          <tr><td>00:12–20</td><td>塞床底</td><td>第一种，钱塞床底，30年后36万，一分没多。</td><td>30年 = 36万 · 0收益</td><td>存钱罐静止，进度条灰满不动，"+0收益"红字弹出</td></tr>
+          <tr><td>00:20–33</td><td>定投三档</td><td>每月定投1000，年化8%——10年18万；20年59万；30年149万。</td><td>10年→18万 ｜ 20年→59万 ｜ 30年→149万</td><td>三柱状图依次弹出，青→金→亮金，数字滚动</td></tr>
+          <tr><td>00:33–42</td><td>拆解113万</td><td>本金还是36万，多出来的113万，全是复利赚的。</td><td>本金36万 + 复利113万 = 149万</td><td>横柱拆两段：灰本金+金复利，"钱替你打工"弹出</td></tr>
+          <tr><td>00:42–50</td><td>滚雪球</td><td>复利是什么？你赚的利息下个月开始替你赚钱，像滚雪球，越滚越大。</td><td>利息 → 变本金 → 再生利息</td><td>雪球沿坡滚下越滚越大，沿途吸入金币，循环箭头</td></tr>
+          <tr><td>00:50–55</td><td>越往后越猛</td><td>第一个十年赚6万，第二个赚41万，第三个赚90万——越往后越猛。</td><td>+6万 → +41万 → +90万</td><td>三条横条指数增长，底部"时间才是隐藏大佬"高亮</td></tr>
+          <tr><td>00:55–60</td><td>结尾定格</td><td>复利就是钱生钱，钱生的钱再生钱。开始得早，比投得多更值钱。</td><td>复利 = 钱生钱，钱生的钱再生钱</td><td>"149万"定格金色光晕扩散，底部slogan淡出</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <textarea id="tb-text" style="position:absolute;left:-9999px;width:1px;height:1px" readonly></textarea>
+    <div class="tip">提示：复制后可粘贴到 Excel/Notion/飞书表格，按列自动对齐。</div>
+  </div>
+
+  <footer>复利 60 秒科普脚本 · 2026-08-29 · 月供1000 / 年化8% / 30年=149万</footer>
+
+</div>
+
+<script>
+document.querySelectorAll('.copy-btn').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var targetId = btn.getAttribute('data-target');
+    var el = document.getElementById(targetId);
+    var text;
+    if(targetId === 'tb-text'){
+      // 表格转制表符分隔文本
+      var rows = document.querySelectorAll('#tb-text-html tr');
+      text = [];
+      rows.forEach(function(tr){
+        var cells = tr.querySelectorAll('th,td');
+        var line = [];
+        cells.forEach(function(td){ line.push(td.innerText.trim()); });
+        text.push(line.join('\t'));
+      });
+      text = text.join('\n');
+    } else {
+      text = el.innerText;
+    }
+
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){
+        showCopied(btn);
+      }).catch(function(){
+        fallbackCopy(text, btn);
+      });
+    } else {
+      fallbackCopy(text, btn);
+    }
+  });
+});
+
+function showCopied(btn){
+  var orig = btn.innerText;
+  btn.innerText = '✓ 已复制';
+  btn.classList.add('copied');
+  setTimeout(function(){
+    btn.innerText = orig;
+    btn.classList.remove('copied');
+  }, 1800);
+}
+
+function fallbackCopy(text, btn){
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.left = '-9999px';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); showCopied(btn); }
+  catch(e){ /* ignore */ }
+  document.body.removeChild(ta);
+}
+</script>
+</body>
+</html>

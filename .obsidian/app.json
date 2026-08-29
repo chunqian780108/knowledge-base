@@ -1,4 +1,11 @@
 {
+  "prettifyLinks": true,
+  "lineWidth": 70,
+  "tabTitleSize": 12,
+  "fontOverride": false,
+  "monospaceFont": "\"JetBrains Mono\", \"Fira Code\", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+  "monospaceFontSize": 14,
+  "zoomLevel": 1,
   "alwaysUpdateLinks": true,
   "attachmentFolderPath": "99-附件/图片",
   "excludedExtensions": "",
@@ -9,10 +16,7 @@
   "useMarkdownLinks": false,
   "showLineNumber": true,
   "showFrontmatter": true,
-  "showRibbon": true,
-  "showViewHeader": true,
   "showTabTitle": true,
-  "nativeMenus": false,
   "showDeprecatedEmbeddedComponents": false,
   "propertiesInDocument": "source",
   "livePreview": true,
@@ -33,13 +37,7 @@
   "focusNewTab": true,
   "showFileTree": true,
   "scrollPastEnd": true,
-  "cssTheme": "",
-  "enabledCssSnippets": [
-    "beautiful-callouts",
-    "custom-tags"
-  ],
   "promptDeleteNote": true,
   "useTab": true,
-  "showRibbon": true,
   "translateTabs": true
 }
