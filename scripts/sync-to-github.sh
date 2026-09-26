@@ -50,21 +50,15 @@ if ! git remote get-url origin &>/dev/null; then
   exit 1
 fi
 
-# 1. 先拉取远程最新内容
-log "📥 拉取远程更新..."
-if git pull --rebase origin main 2>&1 | tee -a "$LOG_FILE"; then
-  log "✅ 拉取成功"
-else
-  log "⚠️  拉取失败，尝试继续推送本地变更"
-fi
-
-# 2. 添加所有变更
+# 1. 先提交本地变更
+#    必须在 pull 之前：工作区有未提交改动时 git pull --rebase 一定会失败，
+#    而知识库几乎每次同步都有改动，先 pull 会让这一步形同虚设。
 git add -A
 CHANGED=$(git status --porcelain | wc -l | xargs)
 
 if [ "$CHANGED" -gt 0 ]; then
   log "📝 检测到 $CHANGED 个文件变更，正在提交..."
-  if git commit -m "backup: $(date '+%Y-%m-%d %H:%M:%S') auto sync"; then
+  if git commit -m "backup: $(date '+%Y-%m-%d %H:%M:%S') auto sync" 2>&1 | tee -a "$LOG_FILE"; then
     log "✅ 提交成功"
   else
     log "❌ 提交失败"
@@ -72,6 +66,15 @@ if [ "$CHANGED" -gt 0 ]; then
   fi
 else
   log "ℹ️  没有新的变更需要提交"
+fi
+
+# 2. 再拉取远程更新，变基到本地提交之上
+log "📥 拉取远程更新..."
+if git pull --rebase origin main 2>&1 | tee -a "$LOG_FILE"; then
+  log "✅ 拉取成功"
+else
+  log "⚠️  拉取失败，放弃变基以避免仓库停在冲突状态"
+  git rebase --abort 2>/dev/null || true
 fi
 
 # 3. 推送到远程
