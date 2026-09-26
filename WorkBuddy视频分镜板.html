@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WorkBuddy 入门 · 分镜画面示意板</title>
+<style>
+  :root{
+    --bg:#0d1117; --panel:#161b26; --frame-bg:#000;
+    --accent:#4ec9b0; --gold:#f0c050; --gold-bright:#ffd866;
+    --red:#e06c75; --grey:#4a5568; --grey-d:#2a3242;
+    --text:#e6edf3; --muted:#8b97a8; --line:#243044;
+    --frame-w:480px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+    background:var(--bg);color:var(--text);padding:28px 20px;line-height:1.6;
+  }
+  .wrap{max-width:1080px;margin:0 auto}
+  header{text-align:center;padding-bottom:24px;border-bottom:1px solid var(--line);margin-bottom:32px}
+  header h1{font-size:24px;background:linear-gradient(90deg,var(--accent),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+  header p{color:var(--muted);font-size:13px;margin-top:6px}
+
+  .board{display:flex;flex-direction:column;gap:36px}
+  .shot{display:flex;gap:20px;align-items:flex-start}
+  .shot-num{
+    flex-shrink:0;width:44px;height:44px;border-radius:12px;
+    background:var(--panel);border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;font-size:16px;color:var(--accent);
+  }
+  .shot-info{flex:1;min-width:0}
+  .shot-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+  .shot-meta .tc{font-family:ui-monospace,monospace;font-size:13px;color:var(--gold);background:var(--panel);padding:3px 10px;border-radius:6px;border:1px solid var(--line)}
+  .shot-meta .title{font-size:15px;font-weight:700}
+  .shot-meta .dur{font-size:12px;color:var(--muted)}
+
+  .layout-row{display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start}
+
+  /* 16:9 画面框 */
+  .frame{
+    width:100%;max-width:var(--frame-w);aspect-ratio:16/9;
+    background:var(--frame-bg);border-radius:12px;overflow:hidden;
+    position:relative;border:1px solid var(--line);
+    box-shadow:0 4px 20px rgba(0,0,0,.4);
+  }
+  .frame-tag{
+    position:absolute;top:8px;left:8px;font-size:10px;color:var(--muted);
+    background:rgba(0,0,0,.5);padding:2px 8px;border-radius:4px;z-index:5;
+    font-family:ui-monospace,monospace;
+  }
+  .cap{flex:1;min-width:240px;font-size:13px;color:var(--muted);line-height:1.75}
+  .cap b{color:#c4ccd6}
+  .cap .vfx{color:var(--gold);font-size:12px}
+
+  /* ===== 镜头 1：左右对照 ===== */
+  .f-vs{display:flex;height:100%}
+  .f-vs .side{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:12px;position:relative}
+  .f-vs .side:first-child{border-right:1px solid #1a1a1a}
+  .f-vs .tag{font-size:11px;font-weight:700;padding:3px 10px;border-radius:4px}
+  .f-vs .side.a .tag{background:rgba(74,85,104,.25);color:#8b97a8}
+  .f-vs .side.b .tag{background:rgba(78,201,176,.15);color:var(--accent)}
+  .f-vs .big{font-size:26px}
+  .f-vs .desc{font-size:11px;color:var(--muted);text-align:center}
+  .f-vs .side.b .desc{color:var(--accent)}
+  .f-vs .x{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:var(--grey);font-size:16px;z-index:3}
+
+  /* ===== 镜头 2：实习生 ===== */
+  .f-intern{display:flex;align-items:center;justify-content:center;gap:22px;height:100%;padding:0 22px}
+  .f-intern .person{display:flex;flex-direction:column;align-items:center;gap:6px}
+  .f-intern .avatar{width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#1a2e28,#243b34);
+    border:1px solid rgba(78,201,176,.4);display:flex;align-items:center;justify-content:center;font-size:26px}
+  .f-intern .plabel{font-size:11px;color:var(--accent);font-weight:700}
+  .f-intern .screen{flex:1;max-width:190px;height:84px;border:1px solid var(--line);border-radius:8px;
+    background:#0a0e14;padding:9px;display:flex;flex-direction:column;gap:5px;justify-content:center}
+  .f-intern .row{height:7px;border-radius:3px;background:var(--grey-d)}
+  .f-intern .row.on{background:linear-gradient(90deg,var(--accent),var(--gold))}
+  .f-intern .arrow{color:var(--grey);font-size:16px}
+
+  /* ===== 镜头 3：试验田 ===== */
+  .f-field{display:flex;align-items:center;justify-content:center;height:100%;gap:14px;padding:16px}
+  .f-field .folder{border:1px dashed var(--grey);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;min-width:150px}
+  .f-field .ftitle{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:5px}
+  .f-field .files{display:flex;gap:6px;flex-wrap:wrap}
+  .f-field .f{width:16px;height:20px;border-radius:3px;background:var(--grey-d)}
+  .f-field .plot{border:1px solid var(--accent);background:rgba(78,201,176,.08);border-radius:8px;
+    padding:12px 16px;display:flex;flex-direction:column;align-items:center;gap:6px}
+  .f-field .plot .em{font-size:22px}
+  .f-field .plot .t{font-size:11px;color:var(--accent);font-weight:700}
+  .f-field .warn{font-size:10px;color:var(--red);background:rgba(224,108,117,.12);padding:2px 7px;border-radius:4px}
+
+  /* ===== 镜头 4：三档阶梯 ===== */
+  .f-steps{display:flex;align-items:flex-end;justify-content:center;gap:18px;height:100%;padding:20px 22px 0}
+  .f-steps .st{display:flex;flex-direction:column;align-items:center;gap:7px;justify-content:flex-end;height:100%}
+  .f-steps .box{width:74px;border-radius:8px 8px 0 0;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;gap:2px;font-size:11px;font-weight:700;color:#0d1117;padding:6px 2px}
+  .f-steps .st.s1 .box{height:38%;background:linear-gradient(180deg,#6ad4bd,#4ec9b0)}
+  .f-steps .st.s2 .box{height:64%;background:linear-gradient(180deg,#f0c96a,#d6a84f)}
+  .f-steps .st.s3 .box{height:92%;background:linear-gradient(180deg,#ffd866,#f0a830);box-shadow:0 0 16px rgba(255,216,102,.4)}
+  .f-steps .st .cn{font-size:13px;color:var(--text);font-weight:800}
+  .f-steps .st .en{font-size:9px;color:var(--muted);font-family:ui-monospace,monospace;letter-spacing:.5px}
+  .f-steps .hint{position:absolute;bottom:8px;left:0;right:0;text-align:center;font-size:10px;color:var(--muted)}
+
+  /* ===== 镜头 5：授权克制 ===== */
+  .f-perms{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:14px;padding:16px}
+  .f-perms .grid{display:flex;gap:12px}
+  .f-perms .app{width:40px;height:40px;border-radius:10px;background:var(--grey-d);border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;font-size:18px;filter:grayscale(1) opacity(.45)}
+  .f-perms .app.on{background:rgba(78,201,176,.14);border-color:rgba(78,201,176,.5);filter:none;
+    box-shadow:0 0 12px rgba(78,201,176,.25)}
+  .f-perms .note{font-size:10px;color:var(--muted)}
+  .f-perms .note em{color:var(--gold);font-style:normal}
+
+  /* ===== 镜头 6：三场景 ===== */
+  .f-scenes{display:flex;height:100%}
+  .f-scenes .sc{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+    border-right:1px solid #1a1a1a;padding:8px}
+  .f-scenes .sc:last-child{border-right:none}
+  .f-scenes .glyph{font-size:24px}
+  .f-scenes .k{font-size:16px;font-weight:800}
+  .f-scenes .sc.a .k{color:var(--accent)}
+  .f-scenes .sc.b .k{color:var(--gold)}
+  .f-scenes .sc.c .k{color:var(--gold-bright)}
+  .f-scenes .ex{font-size:10px;color:var(--muted);text-align:center;line-height:1.5}
+
+  /* ===== 镜头 7：四条注意 ===== */
+  .f-warn{display:grid;grid-template-columns:1fr 1fr;gap:10px;height:100%;padding:14px 16px}
+  .f-warn .w{display:flex;align-items:center;gap:8px;background:#0f141d;border:1px solid var(--line);
+    border-radius:8px;padding:8px 10px}
+  .f-warn .n{width:20px;height:20px;flex-shrink:0;border-radius:5px;background:rgba(224,108,117,.15);
+    color:var(--red);font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center}
+  .f-warn .tx{font-size:10.5px;color:#c4ccd6;line-height:1.4}
+  .f-warn .tx em{color:var(--gold);font-style:normal;font-weight:700}
+
+  /* ===== 镜头 8：收尾 ===== */
+  .f-outro{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;padding:16px}
+  .f-outro .line{font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px}
+  .f-outro .line .n{width:20px;height:20px;border-radius:50%;background:var(--panel);border:1px solid var(--line);
+    color:var(--accent);font-size:10px;display:flex;align-items:center;justify-content:center}
+  .f-outro .line .n.g{color:var(--gold);border-color:rgba(240,192,80,.4)}
+  .f-outro .main{font-size:15px;font-weight:800;
+    background:linear-gradient(90deg,var(--accent),var(--gold-bright));
+    -webkit-background-clip:text;background-clip:text;color:transparent;text-align:center;line-height:1.5}
+
+  footer{margin-top:40px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:12px;text-align:center}
+  footer code{background:var(--panel);padding:2px 6px;border-radius:4px;color:var(--accent);font-size:11px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>WorkBuddy 入门 · 分镜画面示意板</h1>
+    <p>心法版 · 约 1 分 50 秒 · 全片不涉及界面操作</p>
+    <p style="margin-top:10px;font-size:12px;color:#6b7686">
+      一句话主张：<b style="color:#f0c050">它不是帮你查资料的，是帮你把活儿干完的</b>
+    </p>
+  </header>
+
+  <div class="board">
+
+    <!-- 分镜 1 -->
+    <div class="shot">
+      <div class="shot-num">1</div>
+      <div class="shot-info">
+        <div class="shot-meta"><span class="tc">00:00–00:08</span><span class="title">开场钩子：它只动嘴</span><span class="dur">8s</span></div>
+        <div class="layout-row">
+          <div class="frame">
+            <span class="frame-tag">SCENE 1</span>
+            <div class="f-vs">
+              <div class="side a">
+                <span class="tag">聊天式 AI</span>
+                <span class="big">💬</span>
+                <span class="desc">只给你答案<br>复制粘贴还是你的事</span>
+              </div>
+              <div class="x">≠</div>
+              <div class="side b">
+                <span class="tag">WorkBuddy</span>
+                <span class="big">🛠️</span>
+                <span class="desc">直接在你电脑上动手<br>文件它自己改</span>
+              </div>
+            </div>
+          </div>
+          <div class="cap">
+            <b>构图：</b>左右对半切，左灰右青，中间一个大"≠"。<br>
+            <b>动效：</b>左边先出现（配"只会动嘴"），停顿半拍，右边"啪"地推入，带青色光晕。<br>
+            <b>字幕：</b>底部居中 ——「会聊天的 AI ≠ 会干活的 AI」。<br>
+            <span class="vfx">▸ 钩子必须在 3 秒内抛出"只动嘴不动手"，否则划走。</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 分镜 2 -->
+    <div class="shot">
+      <div class="shot-num">2</div>
+      <div class="shot-info">
+        <div class="shot-meta"><span class="tc">00:08–00:20</span><span class="title">心智模型：能动手的实习生</span><span class="dur">12s</span></div>
+        <div class="layout-row">
+          <div class="frame">
+            <span class="frame-tag">SCENE 2</span>
+            <div class="f-intern">
+              <div class="person">
+                <div class="avatar">🧑‍💻</div>
+                <span class="plabel">实习生</span>
+              </div>
+              <span class="arrow">→</span>
+              <div class="screen">
+                <div class="row on"></div>
+                <div class="row"></div>
+                <div class="row on"></div>
+                <div class="row"></div>
+              </div>
+            </div>
+          </div>
+          <div class="cap">
+            <b>构图：</b>左侧"实习生"头像，右侧一块屏幕，屏幕里文件条逐行被点亮。<br>
+            <b>动效：</b>文件行一条条亮起（青→金渐变），表示"它在动手"。<br>
+            <b>字幕：</b>「能动手的实习生，不是搜索引擎」。<br>
+            <span class="vfx">▸ 这一句是后面三条心法的总纲，语速要慢下来。</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 分镜 3 -->
+    <div class="shot">
+      <div class="shot-num">3</div>
+      <div class="shot-info">
+        <div class="shot-meta"><span class="tc">00:20–00:32</span><span class="title">心法一：先给它一块试验田</span><span class="dur">12s</span></div>
+        <div class="layout-row">
+          <div class="frame">
+            <span class="frame-tag">SCENE 3</span>
+            <div class="f-field">
+              <div class="folder">
+                <span class="ftitle">📁 一个普通文件夹</span>
+                <div class="files">
+                  <span class="f"></span><span class="f"></span><span class="f"></span>
+                  <span class="f"></span><span class="f"></span>
+                </div>
+                <span class="warn">← 别急着给重要的</span>
+              </div>
+              <div class="plot">
+                <span class="em">🌱</span>
+                <span class="t">AI 试验田</span>
+              </div>
+            </div>
+          </div>
+          <div class="cap">
+            <b>构图：</b>左边一个装满文件的文件夹（灰），右边一块被圈出的"试验田"（青色描边）。<br>
+            <b>动效：</b>左侧文件夹先出现，随后右侧试验田被"圈"出来，边框有绘制动画。<br>
+            <b>字幕：</b>「先圈地，再交活」。<br>
+            <span class="vfx">▸ 红色小字"别急着给重要的"要停留够久，这是本镜头的记忆点。</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 分镜 4 -->
+    <div class="shot">
+      <div class="shot-num">4</div>
+      <div class="shot-info">
+        <div class="shot-meta"><span class="tc">00:32–00:52</span><span class="title">心法二：先问后做（核心）</span><span class="dur">20s</span></div>
+        <div class="layout-row">
+          <div class="frame">
+            <span class="frame-tag">SCENE 4</span>
+            <div class="f-steps">
+              <div class="st s1">
+                <span class="cn">只问不做</span>
+                <span class="en">ASK</span>
+                <div class="box">①</div>
+              </div>
+              <div class="st s2">
+                <span class="cn">先报计划</span>
+                <span class="en">PLAN</span>
+                <div class="box">②</div>
+              </div>
+              <div class="st s3">
+                <span class="cn">直接开干</span>
+                <span class="en">CRAFT</span>
+                <div class="box">③</div>
+              </div>
+              <div class="hint">不确定 → 问　｜　重要 → 计划　｜　明确 → 放手</div>
+            </div>
+          </div>
+          <div class="cap">
+            <b>构图：</b>三级递升阶梯，颜色青 → 金 → 亮金，越高越"放手"。<br>
+            <b>动效：</b>三档依次"嗖"地弹起，每弹一档停 1 秒让观众读字幕；第三档带光晕。<br>
+            <b>字幕：</b>分三次弹出「① 只问不做 / ② 先报计划 / ③ 直接开干」，底部常驻对照条。<br>
+            <span class="vfx">▸ 全片信息密度最高的 20 秒。建议口播念完再重复一遍口诀，字幕同步。<br>▸ 60 秒版可砍掉其他镜头，但这一镜不能砍。</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 分镜 5 -->
+    <div class="shot">
+      <div class="shot-num">5</div>
+      <div class="shot-info">
+        <div class="shot-meta"><span class="tc">00:52–01:02</span><span class="title">心法三：授权要克制</span><span class="dur">10s</span></div>
+        <div class="layout-row">
+          <div class="frame">
+            <span class="frame-tag">SCENE 5</span>
+            <div class="f-perms">
+              <div class="grid">
+                <span class="app">☁️</span>
+                <span class="app on">📄</span>
+                <span class="app">🎨</span>
+                <span class="app">📊</span>
+                <span class="app on">🗂️</span>
+                <span class="app">💬</span>
+              </div>
+              <span class="note">只接当下要用的 ｜ <em>用完就断开</em></span>
+            </div>
+          </div>
+          <div class="cap">
+            <b>构图：</b>一排工具图标，多数灰暗，只有两个亮起（青色描边 + 光晕）。<br>
+            <b>动效：</b>图标逐个亮起又逐个熄灭，只留两个常亮，强调"克制"。<br>
+            <b>字幕：</b>「按需连接，用完断开」。<br>
+            <span class="vfx">▸ "权限给出去容易，收回来费劲"这句放在灭灯动画上。</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 分镜 6 -->
+    <div class="shot">
+      <div class="shot-num">6</div>
+      <div class="shot-info">
+        <div class="shot-meta"><span class="tc">01:02–01:20</span><span class="title">三场景示范</span><span class="dur">18s</span></div>
+        <div class="layout-row">
+          <div class="frame">
+            <span class="frame-tag">SCENE 6</span>
+            <div class="f-scenes">
+              <div class="sc a">
+                <span class="glyph">❓</span>
+                <span class="k">问</span>
+                <span class="ex">单证账册对不上<br>从哪查</span>
+              </div>
+              <div class="sc b">
+                <span class="glyph">📋</span>
+                <span class="k">计划</span>
+                <span class="ex">把本月记录<br>整理成月报</span>
+              </div>
+              <div class="sc c">
+                <span class="glyph">⚡</span>
+                <span class="k">干</span>
+                <span class="ex">三个表合并<br>按日期排序</span>
+              </div>
+            </div>
+          </div>
+          <div class="cap">
+            <b>构图：</b>三画面均分，每格一个动作大字（问 / 计划 / 干）+ 一个具体例子。<br>
+            <b>动效：</b>三格随口播依次高亮，其余两格压暗。<br>
+            <b>字幕：</b>「拿不准 → 问｜复杂 → 计划｜明确 → 干」。<br>
+            <span class="vfx">▸ 例子要用观众自己的工作场景，越具体越可信。你若不改，就用保税仓这个。</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 分镜 7 -->
+    <div class="shot">
+      <div class="shot-num">7</div>
+      <div class="shot-info">
+        <div class="shot-meta"><span class="tc">01:20–01:40</span><span class="title">四条新手注意事项</span><span class="dur">20s</span></div>
+        <div class="layout-row">
+          <div class="frame">
+            <span class="frame-tag">SCENE 7</span>
+            <div class="f-warn">
+              <div class="w"><span class="n">1</span><span class="tx">提示<em>权限不够</em>不是坏了<br>换个普通文件夹</span></div>
+              <div class="w"><span class="n">2</span><span class="tx">别拿重要文件试<em>直接开干</em><br>它真的会改，先备份</span></div>
+              <div class="w"><span class="n">3</span><span class="tx">对外发送<em>自己再确认</em><br>按发送键前看一遍</span></div>
+              <div class="w"><span class="n">4</span><span class="tx">结论要能追到出处<br>缺数据就写<em>暂无数据</em></span></div>
+            </div>
+          </div>
+          <div class="cap">
+            <b>构图：</b>2×2 四宫格，每格编号 + 一句话。<br>
+            <b>动效：</b>四格逐条弹出，强调词用金色。<br>
+            <b>字幕：</b>「① 权限 ② 备份 ③ 对外确认 ④ 不编数据」。<br>
+            <span class="vfx">▸ 这四条是全片的可信度背书 —— 愿意讲坑的人，观众才信。</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 分镜 8 -->
+    <div class="shot">
+      <div class="shot-num">8</div>
+      <div class="shot-info">
+        <div class="shot-meta"><span class="tc">01:40–01:50</span><span class="title">收尾</span><span class="dur">10s</span></div>
+        <div class="layout-row">
+          <div class="frame">
+            <span class="frame-tag">SCENE 8</span>
+            <div class="f-outro">
+              <div class="main">不是帮你查资料的<br>是帮你把活儿干完的</div>
+              <div class="line"><span class="n">1</span>先圈一块试验田</div>
+              <div class="line"><span class="n g">2</span>从「只问不做」开始</div>
+              <div class="line"><span class="n g">3</span>再逐步放手</div>
+            </div>
+          </div>
+          <div class="cap">
+            <b>构图：</b>上方一句主张（青金渐变），下方三步递进。<br>
+            <b>动效：</b>主张先出现，三步依次从下方推入。<br>
+            <b>字幕：</b>「先圈试验田 → 先问后做 → 再逐步放手」。<br>
+            <span class="vfx">▸ 关注引导自然收尾，别硬塞。</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>口播全文见 <code>WorkBuddy入门短视频脚本.md</code> · 心法版</p>
+    <p style="margin-top:8px">
+      本板不含界面操作示意 —— 逐屏路径未经核实，故不绘制。<br>
+      产品概念依据：腾讯官方教程 + 本机 <code>WorkBuddy.app</code> 包内术语。
+    </p>
+  </footer>
+
+</div>
+</body>
+</html>
