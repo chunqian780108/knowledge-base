@@ -22,7 +22,8 @@
 
 set -e
 
-VAULT="/Users/chq118/Library/Mobile Documents/com~apple~CloudDocs/KnowledgeBase"
+# 由脚本自身位置推导仓库根目录：仓库可整体移动，无需修改脚本
+VAULT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$VAULT"
 
 echo "📚 知识库 Git 推送工具"

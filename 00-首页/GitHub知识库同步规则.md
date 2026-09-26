@@ -14,6 +14,20 @@ updated: 2026-08-29
 - **仓库地址**：https://github.com/chunqian780108/knowledge-base
 - **可见性**：私有（Private）
 - **主分支**：main
+- **本地位置**：`~/KnowledgeBase`
+
+> [!warning] 本地仓库不能放在 iCloud Drive
+> macOS 的 TCC 机制禁止 launchd 后台任务读写 iCloud Drive
+> （`~/Library/Mobile Documents/`），报错为 `Operation not permitted`。
+> 因此本地仓库必须放在不受保护的目录，如 `~/KnowledgeBase`。
+> 同时，iCloud 与 Git 同时同步一个仓库会导致 `.git` 目录被跨设备并发改写，
+> 有损坏仓库的真实风险 —— 只保留 Git 一种同步方式。
+
+以下命令均以 `VAULT` 表示仓库路径：
+
+```bash
+VAULT="$HOME/KnowledgeBase"
+```
 
 ## 同步层级
 
@@ -46,12 +60,17 @@ updated: 2026-08-29
 
 **安装方法**：
 ```bash
-bash /Users/chq118/Library/Mobile Documents/com~apple~CloudDocs/KnowledgeBase/scripts/install-sync.sh
+bash "$VAULT/scripts/install-sync.sh"
 ```
 
 **卸载方法**：
 ```bash
-bash /Users/chq118/Library/Mobile Documents/com~apple~CloudDocs/KnowledgeBase/scripts/uninstall-sync.sh
+bash "$VAULT/scripts/uninstall-sync.sh"
+```
+
+**查看运行状态与上次退出码**：
+```bash
+launchctl print gui/$(id -u)/com.chunqian.knowledge-base-sync | grep -E 'state|last exit'
 ```
 
 ### 第三层：手动同步
@@ -59,7 +78,7 @@ bash /Users/chq118/Library/Mobile Documents/com~apple~CloudDocs/KnowledgeBase/sc
 #### macOS 终端
 ```bash
 # 一键同步脚本
-bash /Users/chq118/Library/Mobile Documents/com~apple~CloudDocs/KnowledgeBase/push-to-github.sh
+bash "$VAULT/push-to-github.sh"
 ```
 
 #### Obsidian 快捷键

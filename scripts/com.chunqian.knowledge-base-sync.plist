@@ -8,7 +8,7 @@
     <key>ProgramArguments</key>
     <array>
         <string>/bin/bash</string>
-        <string>/Users/chq118/Library/Mobile Documents/com~apple~CloudDocs/KnowledgeBase/scripts/sync-to-github.sh</string>
+        <string>__VAULT__/scripts/sync-to-github.sh</string>
     </array>
 
     <key>StartInterval</key>
@@ -24,6 +24,6 @@
     <string>/Users/chq118/Library/Logs/knowledge-base-sync-stderr.log</string>
 
     <key>WorkingDirectory</key>
-    <string>/Users/chq118/Library/Mobile Documents/com~apple~CloudDocs/KnowledgeBase</string>
+    <string>__VAULT__</string>
 </dict>
 </plist>

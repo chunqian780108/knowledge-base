@@ -11,9 +11,11 @@
 # 日志位置：~/Library/Logs/knowledge-base-sync.log
 # ============================================
 
-set -e
+set -eo pipefail
 
-VAULT="/Users/chq118/Library/Mobile Documents/com~apple~CloudDocs/KnowledgeBase"
+# 由脚本自身位置推导仓库根目录：仓库可整体移动，无需修改脚本
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+VAULT="$(cd "$SCRIPT_DIR/.." && pwd)"
 LOG_FILE="$HOME/Library/Logs/knowledge-base-sync.log"
 MAX_LOG_SIZE=1048576  # 1MB
 
